@@ -25,6 +25,7 @@ Everything visible on the site comes from JSON files in [`src/content/`](src/con
 | [`team.json`](src/content/team.json) | Team members |
 | [`portfolio.json`](src/content/portfolio.json) | Portfolio page — `active.items` and `past.items` |
 | [`schedule.json`](src/content/schedule.json) | Schedule page form questions, copy, trust banner |
+| [`legal/*.md`](src/content/legal/) | Privacy policy + terms of service — rendered at `/privacy` and `/terms`, raw markdown served at `/privacy.md` and `/terms.md` |
 
 The "Selected past work" section on `/portfolio` only renders when `past.items` is non-empty — leave it `[]` until you have entries.
 

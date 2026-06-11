@@ -1,0 +1,244 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import site from '../content/site.json';
+
+interface Props {
+  title: string;
+  description: string;
+  pathname: string;
+  effectiveDate: string;
+  markdownHref: string;
+}
+
+const { title, description, pathname, effectiveDate, markdownHref } = Astro.props;
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: site.url },
+      { '@type': 'ListItem', position: 2, name: title, item: `${site.url}${pathname}` },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': `${site.url}${pathname}#webpage`,
+    name: `${title} — ${site.name}`,
+    url: `${site.url}${pathname}`,
+    description,
+    isPartOf: { '@id': `${site.url}/#website` },
+    about: { '@id': `${site.url}/#org` },
+    inLanguage: 'en-US',
+  },
+];
+---
+
+<BaseLayout title={title} description={description} pathname={pathname} jsonLd={jsonLd}>
+  <header class="page-head">
+    <div class="container">
+      <div class="breadcrumb fade-up">{site.legalName}</div>
+      <h1 class="fade-up delay-1">{title}</h1>
+      <p class="lede fade-up delay-2">Effective {effectiveDate}</p>
+      <div class="doc-actions fade-up delay-2">
+        <a class="doc-action" href={markdownHref} download>Download markdown</a>
+        <span class="sep">/</span>
+        <button type="button" class="doc-action" id="print-doc">Print</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="legal-section">
+    <div class="container">
+      <article class="legal-doc">
+        <slot />
+      </article>
+    </div>
+  </section>
+
+  <script>
+    document.getElementById('print-doc')?.addEventListener('click', () => window.print());
+
+    // Upgrade obfuscated "name [at] domain" addresses to mailto links.
+    // The source markdown never contains a literal address, so neither the
+    // served HTML nor the raw .md endpoints expose anything to scrapers.
+    const doc = document.querySelector('.legal-doc');
+    if (doc) {
+      const pattern = /([A-Za-z0-9._-]+) \[at\] ([A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+)/g;
+      const walker = document.createTreeWalker(doc, NodeFilter.SHOW_TEXT);
+      const nodes: Text[] = [];
+      while (walker.nextNode()) {
+        const node = walker.currentNode as Text;
+        if (node.data.includes('[at]')) nodes.push(node);
+      }
+      for (const node of nodes) {
+        const frag = document.createDocumentFragment();
+        let last = 0;
+        for (const m of node.data.matchAll(pattern)) {
+          frag.append(node.data.slice(last, m.index));
+          const address = `${m[1]}@${m[2]}`;
+          const a = document.createElement('a');
+          a.href = `mailto:${address}`;
+          a.textContent = address;
+          frag.append(a);
+          last = m.index + m[0].length;
+        }
+        frag.append(node.data.slice(last));
+        node.replaceWith(frag);
+      }
+    }
+  </script>
+</BaseLayout>
+
+<style>
+  .page-head { padding: 80px 0 24px; }
+  .breadcrumb {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink-faint);
+    margin-bottom: 32px;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-family: var(--mono);
+  }
+  .breadcrumb::before {
+    content: '';
+    width: 32px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .page-head h1 {
+    font-family: var(--serif);
+    font-size: clamp(44px, 6vw, 72px);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    max-width: 900px;
+    margin-bottom: 20px;
+    font-weight: 400;
+  }
+  .page-head .lede {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink-dim);
+    letter-spacing: 0.05em;
+  }
+  .doc-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 20px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+  }
+  .doc-actions .sep { color: var(--line-bright); }
+  .doc-action {
+    background: none;
+    border: none;
+    padding: 0;
+    font: inherit;
+    letter-spacing: inherit;
+    color: var(--ink-dim);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .doc-action:hover { color: var(--accent); }
+
+  .legal-section { padding: 40px 0 100px; }
+  .legal-doc { max-width: 760px; }
+
+  /* The markdown's own H1 + meta lines duplicate the page head on screen. */
+  .legal-doc :global(h1),
+  .legal-doc :global(h1 + p),
+  .legal-doc :global(h1 + p + p) {
+    display: none;
+  }
+
+  .legal-doc :global(h2) {
+    font-family: var(--serif);
+    font-size: 28px;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    margin: 48px 0 16px;
+    padding-top: 32px;
+    border-top: 1px solid var(--line);
+  }
+  .legal-doc :global(p) {
+    color: var(--ink-dim);
+    font-size: 16px;
+    line-height: 1.7;
+    margin-bottom: 16px;
+  }
+  .legal-doc :global(ul) {
+    margin: 0 0 16px;
+    padding-left: 22px;
+  }
+  .legal-doc :global(li) {
+    color: var(--ink-dim);
+    font-size: 16px;
+    line-height: 1.7;
+    margin-bottom: 10px;
+  }
+  .legal-doc :global(strong) { color: var(--ink); font-weight: 600; }
+  .legal-doc :global(a) {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .legal-doc :global(a:hover) { color: var(--accent-warm); }
+
+  @media (max-width: 700px) {
+    .page-head { padding: 48px 0 16px; }
+    .legal-section { padding: 24px 0 64px; }
+  }
+</style>
+
+<style is:global>
+  @media print {
+    html { color-scheme: light; }
+    body {
+      background: #fff !important;
+      color: #111 !important;
+    }
+    body::before { display: none !important; }
+    nav, footer, .skip-link, .page-head, .doc-actions { display: none !important; }
+    main { padding: 0; }
+    .legal-doc { max-width: 100%; }
+    .legal-doc h1,
+    .legal-doc h1 + p,
+    .legal-doc h1 + p + p {
+      display: block;
+    }
+    .legal-doc h1 {
+      font-family: Georgia, serif;
+      font-weight: 400;
+      font-size: 28pt;
+      margin-bottom: 12pt;
+      color: #111;
+    }
+    .legal-doc h2 {
+      border-top: none;
+      padding-top: 0;
+      margin: 24pt 0 8pt;
+      font-size: 16pt;
+      color: #111;
+      break-after: avoid;
+    }
+    .legal-doc p,
+    .legal-doc li,
+    .legal-doc strong {
+      color: #111 !important;
+      font-size: 11pt;
+      line-height: 1.5;
+    }
+    .legal-doc a {
+      color: #111 !important;
+      text-decoration: none;
+    }
+  }
+</style>
