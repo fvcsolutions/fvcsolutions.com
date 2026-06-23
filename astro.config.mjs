@@ -8,6 +8,7 @@ export default defineConfig({
   site: SITE,
   trailingSlash: 'never',
   build: {
+    format: 'file',
     inlineStylesheets: 'always',
     assets: '_assets',
   },
