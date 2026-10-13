@@ -22,10 +22,12 @@ const isActive = (href: string): boolean => {
       {site.nav.map((item) => (
         <a href={item.href} class:list={[{ active: isActive(item.href) }]}>{item.label}</a>
       ))}
-      <a
-        href="/schedule"
-        class:list={['btn', 'btn-primary', 'btn-arrow', { active: active === '/schedule' }]}
-      >Schedule a call</a>
+      {site.features.scheduleCall && (
+        <a
+          href="/schedule"
+          class:list={['btn', 'btn-primary', 'btn-arrow', { active: active === '/schedule' }]}
+        >Schedule a call</a>
+      )}
     </div>
   </div>
 </nav>

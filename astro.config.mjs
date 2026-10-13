@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import AstroPWA from '@vite-pwa/astro';
+import site from './src/content/site.json';
 
 const SITE = 'https://fvcsolutions.com';
 
@@ -22,6 +23,7 @@ export default defineConfig({
       changefreq: 'monthly',
       priority: 0.7,
       lastmod: new Date(),
+      filter: (page) => site.features.scheduleCall || page !== `${SITE}/schedule`,
     }),
     AstroPWA({
       registerType: 'autoUpdate',

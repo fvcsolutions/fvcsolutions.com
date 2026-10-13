@@ -4,6 +4,9 @@ import RichTitle from '../components/RichTitle.astro';
 import site from '../content/site.json';
 import schedule from '../content/schedule.json';
 
+// Hidden until site.features.scheduleCall is turned back on; the build emits a redirect to home.
+if (!site.features.scheduleCall) return Astro.redirect('/');
+
 // Convert simple **bold** markdown into HTML
 const mdBold = (s: string): string =>
   s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');

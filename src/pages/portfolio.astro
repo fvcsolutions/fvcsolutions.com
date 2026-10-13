@@ -116,13 +116,15 @@ const hasPast = portfolio.past.items.length > 0;
     </section>
   )}
 
-  <section class="cta-strip">
-    <div class="container">
-      <h2><RichTitle segments={portfolio.cta.title} /></h2>
-      <p>{portfolio.cta.sub}</p>
-      <a href={portfolio.cta.ctaHref} class="btn btn-primary btn-arrow">{portfolio.cta.ctaLabel}</a>
-    </div>
-  </section>
+  {site.features.scheduleCall && (
+    <section class="cta-strip">
+      <div class="container">
+        <h2><RichTitle segments={portfolio.cta.title} /></h2>
+        <p>{portfolio.cta.sub}</p>
+        <a href={portfolio.cta.ctaHref} class="btn btn-primary btn-arrow">{portfolio.cta.ctaLabel}</a>
+      </div>
+    </section>
+  )}
 
   <dialog id="zoom-dialog" class="zoom-dialog" aria-label="Zoomed portfolio image">
     <button type="button" class="zoom-close" aria-label="Close zoomed image">&times;</button>

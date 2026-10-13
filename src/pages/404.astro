@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import RichTitle from '../components/RichTitle.astro';
+import site from '../content/site.json';
 ---
 
 <BaseLayout
@@ -22,7 +23,7 @@ import RichTitle from '../components/RichTitle.astro';
       <div class="links">
         <a href="/" class="btn btn-primary btn-arrow">Home</a>
         <a href="/portfolio" class="btn btn-ghost">Portfolio</a>
-        <a href="/schedule" class="btn btn-ghost">Schedule a call</a>
+        {site.features.scheduleCall && <a href="/schedule" class="btn btn-ghost">Schedule a call</a>}
       </div>
     </div>
   </section>

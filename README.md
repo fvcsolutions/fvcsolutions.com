@@ -17,7 +17,7 @@ Everything visible on the site comes from JSON files in [`src/content/`](src/con
 
 | File | Drives |
 |------|--------|
-| [`site.json`](src/content/site.json) | Brand, location, nav, social links, Calendly URL + question mapping |
+| [`site.json`](src/content/site.json) | Brand, location, nav, social links, feature flags, Calendly URL + question mapping |
 | [`home.json`](src/content/home.json) | Hero + final CTA on the homepage |
 | [`services.json`](src/content/services.json) | "What we build" four-card grid |
 | [`method.json`](src/content/method.json) | "How we work" numbered list |
@@ -44,6 +44,8 @@ npm run icons
 Outputs are committed to `public/icons/` so production builds are deterministic. Re-run the script (and commit the result) if the logo changes.
 
 ## Updating the Calendly hand-off
+
+The whole "Schedule a call" feature is gated by `features.scheduleCall` in `site.json`. While it is `false`, every CTA is hidden, `/schedule` redirects to home, and the page is left out of the sitemap. When turning it back on, also restore the Schedule and Calendly lines in [`public/llms.txt`](public/llms.txt), which is static and can't read the flag.
 
 The schedule form posts to `site.calendly.url` with the form values as query-string `a1`–`a7` parameters. To adjust:
 

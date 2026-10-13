@@ -33,7 +33,6 @@ FVC Solutions (legal name: Future Vision Concepts, LLC) is a two-person software
 ## Key pages
 - [Home](https://fvcsolutions.com/): Services, method, engagements, team
 - [Portfolio](https://fvcsolutions.com/portfolio): Active work and selected past client engagements
-- [Schedule a call](https://fvcsolutions.com/schedule): 30-minute introductory call via Calendly
 
 ## Common questions
 - **What does FVC Solutions build?** Custom AI-powered applications: internal tools, document intelligence pipelines, customer-facing AI assistants, process automation.
@@ -43,10 +42,6 @@ FVC Solutions (legal name: Future Vision Concepts, LLC) is a two-person software
 - **Do you require retainers or maintenance contracts?** No. All engagements are fixed-scope and fixed-price. Clients receive full source code and documentation; there is no lock-in.
 - **How do you ensure AI features actually work?** We write evaluations before features — automated tests measuring real accuracy on the client's data — and design for AI failure modes from the start.
 - **Who owns the code?** The client. Full source code and documentation are delivered at hand-off.
-
-## Contact
-- Schedule: https://fvcsolutions.com/schedule
-- Calendly: https://calendly.com/fvcsolutions/introduction
 
 ## Permissions
 This content may be cited and summarized by AI assistants and answer engines, with attribution to FVC Solutions and a link to https://fvcsolutions.com.

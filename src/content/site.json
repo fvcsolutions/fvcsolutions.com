@@ -15,6 +15,9 @@
   "founded": "1999",
   "description": "AI-powered software for small business. A small, experienced team designing and shipping AI-powered applications. Fixed-scope engagements. No retainers. No maintenance contracts.",
   "shortDescription": "AI-powered software for small business",
+  "features": {
+    "scheduleCall": false
+  },
   "calendly": {
     "url": "https://calendly.com/fvcsolutions/introduction",
     "questionMap": {
