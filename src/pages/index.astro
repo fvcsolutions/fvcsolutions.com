@@ -7,6 +7,9 @@ import services from '../content/services.json';
 import method from '../content/method.json';
 import engagement from '../content/engagement.json';
 import team from '../content/team.json';
+import portfolio from '../content/portfolio.json';
+
+const launched = portfolio.active.items.find((i) => i.id === 'downbad')!;
 
 // Parse engagement price strings into structured Offer pricing.
 // "$5,000 · 2 weeks" → { price: "5000" }
@@ -215,6 +218,20 @@ const faqLd = {
     </div>
   </header>
 
+  <section class="launched" aria-label="Just launched">
+    <div class="container">
+      <a class="launched-card reveal" href={launched.badge.href} target="_blank" rel="noopener">
+        <img src="/images/portfolio/downbad-logo.webp" alt="" width="56" height="56" />
+        <div class="launched-body">
+          <div class="launched-tag"><span class="launched-dot">Just launched</span> <span class="sep">/</span> {launched.badge.label}</div>
+          <div class="launched-title">{launched.title} <span class="launched-role">{launched.role}</span></div>
+          <p>{launched.description}</p>
+        </div>
+        <span class="launched-arrow" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </section>
+
   <section id="build" class="build">
     <div class="container">
       <div class="section-label reveal">{services.label}</div>
@@ -367,6 +384,53 @@ const faqLd = {
   }
 
   /* WHAT WE BUILD */
+  /* JUST LAUNCHED */
+  .launched { padding: 0 0 48px; margin-top: -88px; }
+  .launched-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 16px 22px;
+    border: 1px solid var(--line);
+    background: var(--bg-2);
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .launched-card:hover { border-color: var(--accent-deep); transform: translateY(-1px); }
+  .launched-card:focus-visible { outline: 2px solid var(--accent-warm); outline-offset: 3px; }
+  .launched-card img { width: 56px; height: 56px; flex-shrink: 0; }
+  .launched-body { flex: 1; min-width: 0; }
+  .launched-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 4px;
+  }
+  .launched-tag .sep { color: var(--line-bright); }
+  .launched-dot { color: var(--accent); }
+  .launched-dot::before { content: '● '; font-size: 7px; vertical-align: middle; }
+  .launched-title { font-family: var(--serif); font-size: 22px; line-height: 1.2; }
+  .launched-role {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+    margin-left: 8px;
+  }
+  .launched-body p { margin: 4px 0 0; font-size: 14px; line-height: 1.5; color: var(--ink-dim); }
+  .launched-arrow { font-size: 20px; color: var(--ink-faint); transition: color 0.2s, transform 0.2s; }
+  .launched-card:hover .launched-arrow { color: var(--accent); transform: translateX(3px); }
+  @media (max-width: 640px) {
+    .launched { margin-top: -60px; }
+    .launched-card { align-items: flex-start; gap: 14px; padding: 14px 16px; }
+    .launched-card img { width: 40px; height: 40px; }
+    .launched-role { display: block; margin-left: 0; }
+    .launched-arrow { display: none; }
+  }
+
   .build {
     border-top: 1px solid var(--line);
     background: linear-gradient(180deg, transparent, rgba(23, 19, 16, 0.4));

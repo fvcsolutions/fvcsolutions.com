@@ -71,7 +71,11 @@ const hasPast = portfolio.past.items.length > 0;
             />
             <div class="work-meta">
               <div class="work-tags">
-                <span class:list={['badge', item.badge.kind]}>{item.badge.label}</span>
+                {item.badge.href ? (
+                  <a class:list={['badge', item.badge.kind]} href={item.badge.href} target="_blank" rel="noopener">{item.badge.label}</a>
+                ) : (
+                  <span class:list={['badge', item.badge.kind]}>{item.badge.label}</span>
+                )}
                 <span class="sep">/</span>
                 <span>{item.meta}</span>
               </div>
@@ -278,6 +282,8 @@ const hasPast = portfolio.past.items.length > 0;
     border-color: #6b5520;
     background: rgba(212, 160, 80, 0.05);
   }
+  a.badge { text-decoration: none; }
+  a.badge:hover { border-color: currentColor; }
   .badge.shipped {
     color: var(--ink-dim);
     border-color: var(--line-bright);

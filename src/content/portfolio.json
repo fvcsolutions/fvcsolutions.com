@@ -29,10 +29,10 @@
         "id": "downbad",
         "image": {
           "src": "/images/portfolio/downbad.webp",
-          "alt": "Down Bad notification profiles dashboard listing uptime, quiet-hours digest, and dev sandbox profiles with their delivery channels",
+          "alt": "DownBad landing page with a free domain health check form and uptime, SSL, DNS, domain expiry, and port monitor types",
           "eager": true
         },
-        "badge": { "kind": "beta", "label": "Beta soon" },
+        "badge": { "kind": "beta", "label": "downbad.app", "href": "https://downbad.app" },
         "meta": "Product · 2026",
         "title": "Down Bad",
         "role": "SaaS · uptime monitoring",
