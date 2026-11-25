@@ -1,0 +1,361 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import site from '../content/site.json';
+// The form posts to the fvcsolutions-contact Lambda (functions/contact, infra/contact.yaml). It checks
+// the ALTCHA proof of work and files the message in Pipebrain as FVCW feedback.
+
+const topics = [
+  { value: 'legal', label: 'Legal' },
+  { value: 'privacy', label: 'Privacy' },
+  { value: 'support', label: 'Support' },
+  { value: 'business', label: 'New Business' },
+];
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: site.url },
+      { '@type': 'ListItem', position: 2, name: 'Contact us', item: `${site.url}/contact` },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ContactPage',
+    '@id': `${site.url}/contact#webpage`,
+    url: `${site.url}/contact`,
+    name: 'Contact us',
+    description: 'Send FVC Solutions a message about legal, privacy, support or new business questions.',
+    isPartOf: { '@id': `${site.url}/#website` },
+    about: { '@id': `${site.url}/#org` },
+    inLanguage: 'en-US',
+  },
+];
+---
+
+<BaseLayout
+  title="Contact us"
+  description="Send FVC Solutions a message about legal, privacy, support or new business questions. No email address needed."
+  pathname="/contact"
+  jsonLd={jsonLd}
+>
+  <header class="page-head">
+    <div class="container">
+      <div class="breadcrumb fade-up">Contact</div>
+      <h1 class="fade-up delay-1">Contact us</h1>
+      <p class="lede fade-up delay-2">
+        Questions about our products, your privacy, our terms, or a project you have in mind? Send us a message and
+        we'll read it. Include a way to reach you in your message if you'd like a reply.
+      </p>
+    </div>
+  </header>
+
+  <section class="form-section">
+    <div class="container">
+      <form id="contact-form" novalidate data-endpoint={site.contact.endpoint}>
+        <div class="field">
+          <label class="field-label" for="contact-topic">Topic</label>
+          <select id="contact-topic" name="topic" required>
+            <option value="" disabled selected>Choose a topic</option>
+            {topics.map((t) => <option value={t.value}>{t.label}</option>)}
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="contact-name">
+            Name <span class="optional">Optional</span>
+          </label>
+          <input id="contact-name" name="name" type="text" maxlength="120" autocomplete="name" />
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="contact-message">Message</label>
+          <textarea id="contact-message" name="message" rows="8" minlength="2" maxlength="3700" required
+            aria-describedby="contact-message-hint"></textarea>
+          <p id="contact-message-hint" class="field-help">Please don't include passwords or anything you want kept secret.</p>
+        </div>
+
+        <div class="trap" aria-hidden="true">
+          <label for="contact-website">Leave this empty</label>
+          <input id="contact-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <altcha-widget
+          id="contact-altcha"
+          name="altcha"
+          challenge={`${site.contact.endpoint}/challenge`}
+          auto="onfocus"
+          configuration='{"humanInteractionSignature": false, "hideLogo": true, "hideFooter": true}'
+        ></altcha-widget>
+
+        <p id="contact-status" class="status" role="status" aria-live="polite"></p>
+
+        <button class="btn btn-primary btn-arrow" type="submit" id="contact-send">Send message</button>
+        <noscript><p class="field-help">The contact form needs JavaScript. Please enable it to send us a message.</p></noscript>
+      </form>
+
+      <div id="contact-done" class="done" hidden>
+        <h2 id="contact-done-title" tabindex="-1">Message received</h2>
+        <p>Thanks. Your message reached the FVC Solutions team on <strong id="contact-done-when"></strong>.</p>
+        <p><a href="/contact" id="contact-again">Send another message</a></p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import 'altcha/external';
+  import 'altcha/altcha.css';
+  import Pbkdf2Worker from 'altcha/workers/pbkdf2?worker';
+
+  const MESSAGES: Record<string, string> = {
+    invalid_topic: 'Choose a topic.',
+    invalid_message: 'Write a message of at least two characters.',
+    invalid_name: 'Shorten your name to 120 characters or fewer.',
+    captcha_missing: "Tick the check box first, so we know you're not a bot.",
+    captcha_failed: "The check didn't pass. Tick the box again, then send.",
+    captcha_expired: 'The check expired. Tick the box again, then send.',
+    captcha_reused: 'That check was already used. Tick the box again, then send.',
+    busy: "We're getting a lot of messages. Please try again in a few minutes.",
+  };
+  const FALLBACK = "Something went wrong and your message wasn't sent. Please try again later.";
+
+  (window as any).$altcha.algorithms.set('PBKDF2/SHA-256', () => new Pbkdf2Worker());
+
+  const form = document.getElementById('contact-form') as HTMLFormElement;
+  const endpoint = form.dataset.endpoint as string;
+  const topic = document.getElementById('contact-topic') as HTMLSelectElement;
+  const message = document.getElementById('contact-message') as HTMLTextAreaElement;
+  const status = document.getElementById('contact-status') as HTMLParagraphElement;
+  const send = document.getElementById('contact-send') as HTMLButtonElement;
+  const widget = document.getElementById('contact-altcha') as any;
+
+  // Links from the legal pages preselect a topic, e.g. /contact?topic=privacy.
+  const chosen = new URLSearchParams(location.search).get('topic');
+  if (chosen && [...topic.options].some((o) => o.value === chosen && !o.disabled)) topic.value = chosen;
+
+  function show(text: string, kind: 'error' | '') {
+    status.textContent = text;
+    status.dataset.kind = kind;
+  }
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const data = new FormData(form);
+    if (!topic.value) {
+      show(MESSAGES.invalid_topic, 'error');
+      topic.focus();
+      return;
+    }
+    const text = String(data.get('message') ?? '').trim();
+    if (text.length < 2) {
+      show(MESSAGES.invalid_message, 'error');
+      message.focus();
+      return;
+    }
+    const altcha = String(data.get('altcha') ?? '');
+    if (!altcha) {
+      show(MESSAGES.captcha_missing, 'error');
+      return;
+    }
+    const body = JSON.stringify({
+      topic: topic.value,
+      name: String(data.get('name') ?? '').trim(),
+      message: text,
+      website: data.get('website') ?? '',
+      altcha,
+    });
+    send.disabled = true;
+    show('Sending…', '');
+    try {
+      const response = await fetch(`${endpoint}/message`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body,
+      });
+      const result = await response.json().catch(() => ({}));
+      if (response.ok) {
+        form.reset();
+        widget.reset?.();
+        show('', '');
+        form.hidden = true;
+        const received = new Date(result.receivedAt ?? Date.now());
+        (document.getElementById('contact-done-when') as HTMLElement).textContent = received.toLocaleString(undefined, {
+          dateStyle: 'long',
+          timeStyle: 'short',
+        });
+        (document.getElementById('contact-done') as HTMLElement).hidden = false;
+        (document.getElementById('contact-done-title') as HTMLElement).focus();
+      } else {
+        // The server may already have spent this solve, so every failure asks for a fresh one.
+        widget.reset?.();
+        show(MESSAGES[result.error] ?? FALLBACK, 'error');
+      }
+    } catch {
+      widget.reset?.();
+      show(FALLBACK, 'error');
+    } finally {
+      send.disabled = false;
+    }
+  });
+</script>
+
+<style>
+  .page-head { padding: 80px 0 40px; }
+  .breadcrumb {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink-faint);
+    margin-bottom: 32px;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-family: var(--mono);
+  }
+  .breadcrumb::before {
+    content: '';
+    width: 32px;
+    height: 1px;
+    background: var(--accent);
+  }
+  .page-head h1 {
+    font-family: var(--serif);
+    font-size: clamp(44px, 6vw, 72px);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    margin-bottom: 24px;
+    font-weight: 400;
+  }
+  .page-head .lede {
+    font-size: 18px;
+    color: var(--ink-dim);
+    max-width: 620px;
+    line-height: 1.6;
+  }
+
+  .form-section { padding: 0 0 100px; }
+  form {
+    max-width: 760px;
+    display: grid;
+    gap: 32px;
+  }
+  form[hidden] { display: none; }
+  .field { display: grid; gap: 10px; }
+  .field-label {
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 400;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .field-help {
+    color: var(--ink-dim);
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .optional {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-left: 8px;
+    padding: 2px 8px;
+    border: 1px solid var(--line-bright);
+    border-radius: 2px;
+    vertical-align: middle;
+  }
+
+  select, textarea, input[type="text"] {
+    width: 100%;
+    min-height: 48px;
+    background: var(--bg-2);
+    border: 1px solid var(--line-bright);
+    color: var(--ink);
+    padding: 14px 18px;
+    font-family: inherit;
+    font-size: 15px;
+    line-height: 1.6;
+    border-radius: 2px;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  textarea { min-height: 180px; resize: vertical; }
+  select { cursor: pointer; }
+  select:focus, textarea:focus, input[type="text"]:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: var(--bg);
+  }
+  select:focus-visible, textarea:focus-visible, input[type="text"]:focus-visible {
+    outline: 2px solid var(--accent-warm);
+    outline-offset: 2px;
+  }
+
+  .trap {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  altcha-widget {
+    --altcha-max-width: 100%;
+    --altcha-color-base: var(--bg-2);
+    --altcha-color-base-content: var(--ink);
+    --altcha-color-primary: var(--accent);
+    --altcha-color-primary-content: var(--bg);
+    --altcha-color-success: var(--accent-warm);
+    --altcha-color-error: #f08a7e;
+    --altcha-border-color: var(--line-bright);
+    --altcha-border-radius: 2px;
+    --altcha-checkbox-size: 26px;
+  }
+  /* The widget renders its own DOM, outside Astro's scoping. Give its tick-box row a 44px touch height. */
+  altcha-widget :global(.altcha-checkbox),
+  altcha-widget :global(.altcha-checkbox + label),
+  altcha-widget :global(label[for^='altcha-checkbox']) {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .status { min-height: 1.5em; font-size: 14px; color: var(--ink-dim); }
+  .status[data-kind='error'] { color: #f08a7e; }
+
+  form .btn { justify-self: start; padding: 16px 32px; font-size: 15px; }
+
+  .done {
+    max-width: 760px;
+    padding: 28px 32px;
+    border: 1px solid var(--accent-deep);
+    background: linear-gradient(180deg, rgba(38, 156, 72, 0.06), rgba(38, 156, 72, 0.02));
+    border-radius: 2px;
+  }
+  .done[hidden] { display: none; }
+  .done h2 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: 32px;
+    color: var(--accent-warm);
+    margin-bottom: 12px;
+  }
+  .done p { color: var(--ink-dim); line-height: 1.65; margin-bottom: 8px; }
+  .done strong { color: var(--ink); }
+  .done a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  @media (max-width: 700px) {
+    .page-head { padding: 48px 0 24px; }
+    .done { padding: 22px 20px; }
+  }
+</style>

@@ -66,11 +66,11 @@ We use reasonable administrative, technical, and physical safeguards designed to
 ## 8. Your Rights and Choices
 
 - **Access and correction.** You may access and update your account information within the product or by contacting us.
-- **Account and data deletion.** You may delete your account at any time using the account settings within the relevant product, where available, or by emailing privacy [at] fvcsolutions.com. We will delete your account and associated personal information, subject to the retention requirements described in Section 6.
+- **Account and data deletion.** You may delete your account at any time using the account settings within the relevant product, where available, or by writing to us through [Contact Us](https://fvcsolutions.com/contact?topic=privacy). We will delete your account and associated personal information, subject to the retention requirements described in Section 6.
 - **Marketing communications.** You may opt out of marketing emails by using the unsubscribe link in any such email. We will still send transactional and service messages.
 - **Cookies.** You can manage cookies through your browser settings.
 
-To exercise any of these rights, contact us at privacy [at] fvcsolutions.com. We will respond within the time required by applicable law and may need to verify your identity before fulfilling a request.
+To exercise any of these rights, write to us through [Contact Us](https://fvcsolutions.com/contact?topic=privacy). We will respond within the time required by applicable law and may need to verify your identity before fulfilling a request.
 
 ## 9. Additional Information for Users in the EEA and UK (GDPR)
 
@@ -90,11 +90,11 @@ If you are a California resident, you have the right to: know what categories of
 
 In the preceding 12 months, we have collected the categories of personal information described in Section 1 (identifiers, commercial information, internet activity, and user-provided content) for the purposes described in Section 2, and disclosed them to the service providers described in Section 4. We do not sell personal information or share it for cross-context behavioral advertising, and we have no actual knowledge of selling or sharing the personal information of consumers under 16 years of age.
 
-We honor opt-out preference signals such as Global Privacy Control where applicable. To exercise your rights, contact privacy [at] fvcsolutions.com. You may designate an authorized agent to make a request on your behalf.
+We honor opt-out preference signals such as Global Privacy Control where applicable. To exercise your rights, write to us through [Contact Us](https://fvcsolutions.com/contact?topic=privacy). You may designate an authorized agent to make a request on your behalf.
 
 ## 11. Children's Privacy
 
-The Services are not directed to children under 13, and we do not knowingly collect personal information from children under 13. If you believe a child under 13 has provided us with personal information, contact us at privacy [at] fvcsolutions.com and we will delete it.
+The Services are not directed to children under 13, and we do not knowingly collect personal information from children under 13. If you believe a child under 13 has provided us with personal information, tell us through [Contact Us](https://fvcsolutions.com/contact?topic=privacy) and we will delete it.
 
 ## 12. Changes to This Policy
 
@@ -105,6 +105,5 @@ We may update this Privacy Policy from time to time. If we make material changes
 **Future Vision Concepts, LLC (FVC Solutions)**
 Greater Columbus, Ohio, United States
 
-- Privacy inquiries: privacy [at] fvcsolutions.com
-- Legal inquiries: legal [at] fvcsolutions.com
+- Privacy and legal inquiries: [Contact Us](https://fvcsolutions.com/contact?topic=privacy)
 - Website: <https://fvcsolutions.com>

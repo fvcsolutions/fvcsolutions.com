@@ -16,7 +16,7 @@ You must be at least 18 years old (or the age of majority in your jurisdiction) 
 
 ## 2. Accounts
 
-Some Services require an account. You agree to provide accurate information, keep it up to date, and keep your credentials secure. You are responsible for all activity under your account. Notify us promptly at legal [at] fvcsolutions.com if you suspect unauthorized use of your account.
+Some Services require an account. You agree to provide accurate information, keep it up to date, and keep your credentials secure. You are responsible for all activity under your account. Notify us promptly through [Contact Us](https://fvcsolutions.com/contact?topic=legal) if you suspect unauthorized use of your account.
 
 ## 3. Subscriptions, Billing, and Renewal
 
@@ -27,7 +27,7 @@ Some Services require an account. You agree to provide accurate information, kee
 
 ## 4. Cancellation and Refunds
 
-- **Cancellation.** You may cancel a subscription at any time through the account or billing settings of the relevant product, through the platform you purchased from (Apple App Store or Google Play), or by emailing legal [at] fvcsolutions.com. Cancellation takes effect at the end of the current billing period, and you retain access to the paid Services until then.
+- **Cancellation.** You may cancel a subscription at any time through the account or billing settings of the relevant product, through the platform you purchased from (Apple App Store or Google Play), or by writing to us through [Contact Us](https://fvcsolutions.com/contact?topic=legal). Cancellation takes effect at the end of the current billing period, and you retain access to the paid Services until then.
 - **No partial refunds.** Except where required by law, payments are non-refundable and we do not provide refunds or credits for partial billing periods, unused time, or downgrades.
 - **App store purchases.** Refunds for purchases made through the Apple App Store or Google Play are governed by the refund policies of Apple or Google, and refund requests for those purchases must be directed to the platform.
 
@@ -98,6 +98,5 @@ These Terms are governed by the laws of the State of Ohio, without regard to its
 **Future Vision Concepts, LLC (FVC Solutions)**
 Greater Columbus, Ohio, United States
 
-- Legal inquiries: legal [at] fvcsolutions.com
-- Privacy inquiries: privacy [at] fvcsolutions.com
+- Legal and privacy inquiries: [Contact Us](https://fvcsolutions.com/contact?topic=legal)
 - Website: <https://fvcsolutions.com>

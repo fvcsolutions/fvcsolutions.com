@@ -18,6 +18,9 @@
   "features": {
     "scheduleCall": false
   },
+  "contact": {
+    "endpoint": "https://n4ma4bjunoo4q2rfjqzz7get7u0asqmp.lambda-url.us-east-1.on.aws"
+  },
   "calendly": {
     "url": "https://calendly.com/fvcsolutions/introduction",
     "questionMap": {

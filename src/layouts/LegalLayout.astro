@@ -59,35 +59,6 @@ const jsonLd = [
 
   <script>
     document.getElementById('print-doc')?.addEventListener('click', () => window.print());
-
-    // Upgrade obfuscated "name [at] domain" addresses to mailto links.
-    // The source markdown never contains a literal address, so neither the
-    // served HTML nor the raw .md endpoints expose anything to scrapers.
-    const doc = document.querySelector('.legal-doc');
-    if (doc) {
-      const pattern = /([A-Za-z0-9._-]+) \[at\] ([A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+)/g;
-      const walker = document.createTreeWalker(doc, NodeFilter.SHOW_TEXT);
-      const nodes: Text[] = [];
-      while (walker.nextNode()) {
-        const node = walker.currentNode as Text;
-        if (node.data.includes('[at]')) nodes.push(node);
-      }
-      for (const node of nodes) {
-        const frag = document.createDocumentFragment();
-        let last = 0;
-        for (const m of node.data.matchAll(pattern)) {
-          frag.append(node.data.slice(last, m.index));
-          const address = `${m[1]}@${m[2]}`;
-          const a = document.createElement('a');
-          a.href = `mailto:${address}`;
-          a.textContent = address;
-          frag.append(a);
-          last = m.index + m[0].length;
-        }
-        frag.append(node.data.slice(last));
-        node.replaceWith(frag);
-      }
-    }
   </script>
 </BaseLayout>
 

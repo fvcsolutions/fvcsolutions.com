@@ -17,7 +17,7 @@ Everything visible on the site comes from JSON files in [`src/content/`](src/con
 
 | File | Drives |
 |------|--------|
-| [`site.json`](src/content/site.json) | Brand, location, nav, social links, feature flags, Calendly URL + question mapping |
+| [`site.json`](src/content/site.json) | Brand, location, nav, social links, feature flags, contact form endpoint, Calendly URL + question mapping |
 | [`home.json`](src/content/home.json) | Hero + final CTA on the homepage |
 | [`services.json`](src/content/services.json) | "What we build" four-card grid |
 | [`method.json`](src/content/method.json) | "How we work" numbered list |
@@ -51,6 +51,15 @@ The schedule form posts to `site.calendly.url` with the form values as query-str
 
 1. Update `calendly.url` in `site.json` if the event URL changes.
 2. Update `calendly.questionMap` if Calendly custom-question slots change order. The keys are form field IDs; the values are the Calendly slot keys (`a1`, `a2`, ...).
+
+## Contact form
+
+`/contact` is the only way the site offers to reach us: no email address appears anywhere on it. The form (topic, optional name, message, ALTCHA check) posts to the `fvcsolutions-contact` Lambda ([`functions/contact/`](functions/contact/)), which sits behind a public Lambda function URL because GitHub Pages can't run server code. The Lambda hands out ALTCHA proof-of-work challenges, verifies each solution once (spent solutions go in a DynamoDB table), then files the message as an FVCW feedback item in Pipebrain. The Pipebrain widget key stays in the Lambda.
+
+- Infra: [`infra/contact.yaml`](infra/contact.yaml), one CloudFormation stack in us-east-1 (AWS profile `FVC`). The function URL's CORS admits `https://fvcsolutions.com` and `http://localhost:4321`.
+- Keys: Pipebrain Secrets, project FVCW, env prod: `FVCW_SITE_ALTCHA_KEY` and `FVCW_SITE_FEEDBACK_KEY`.
+- Deploy the backend with `npm run deploy:contact` (needs `PIPEBRAIN_TOKEN`; `ppb doctor` checks it). It runs the tests, applies the stack and uploads the code. If the function URL ever changes, update `contact.endpoint` in `site.json`.
+- Tests: `npm test`.
 
 ## Deploy
 

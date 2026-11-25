@@ -5,6 +5,7 @@ const links = [
   { label: 'Home', href: '/' },
   { label: 'Portfolio', href: '/portfolio' },
   ...(site.features.scheduleCall ? [{ label: 'Schedule a call', href: '/schedule' }] : []),
+  { label: 'Contact Us', href: '/contact' },
   { label: 'Privacy', href: '/privacy' },
   { label: 'Terms', href: '/terms' },
   ...site.social.map((s) => ({ label: s.label, href: s.url })),

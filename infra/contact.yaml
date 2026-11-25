@@ -1,0 +1,128 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >-
+  fvcsolutions.com contact form backend: a Lambda behind a public function URL that hands out ALTCHA
+  challenges, verifies solutions and files each message as FVCW feedback in Pipebrain. The site
+  itself stays on GitHub Pages. Deploy in us-east-1 with scripts/contact-deploy.sh.
+
+Parameters:
+  AltchaKey:
+    Type: String
+    NoEcho: true
+    Description: Signs ALTCHA challenges. From Pipebrain Secrets (FVCW prod FVCW_SITE_ALTCHA_KEY).
+  FeedbackKey:
+    Type: String
+    NoEcho: true
+    Description: Pipebrain widget key messages are filed with. From Pipebrain Secrets (FVCW prod FVCW_SITE_FEEDBACK_KEY).
+
+Resources:
+  ContactRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: spend-solutions
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: dynamodb:PutItem
+                Resource: !GetAtt ContactSpentTable.Arn
+      Tags:
+        - Key: project
+          Value: fvcsolutions-site
+
+  # Spent ALTCHA solutions: one item per used challenge signature, removed by TTL after the
+  # challenge expires, so each solve files one message only.
+  ContactSpentTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: fvcsolutions-contact-spent
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: signature
+          AttributeType: S
+      KeySchema:
+        - AttributeName: signature
+          KeyType: HASH
+      TimeToLiveSpecification:
+        AttributeName: expiresAt
+        Enabled: true
+      Tags:
+        - Key: project
+          Value: fvcsolutions-site
+
+  ContactLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/lambda/fvcsolutions-contact
+      RetentionInDays: 30
+
+  # scripts/contact-deploy.sh uploads the real code; the inline stub only lets the stack create it.
+  ContactFunction:
+    Type: AWS::Lambda::Function
+    DependsOn: ContactLogGroup
+    Properties:
+      FunctionName: fvcsolutions-contact
+      Description: fvcsolutions.com contact form - verifies ALTCHA and files the message in Pipebrain
+      Runtime: nodejs22.x
+      Architectures: [arm64]
+      Handler: index.handler
+      MemorySize: 512
+      Timeout: 15
+      Role: !GetAtt ContactRole.Arn
+      Environment:
+        Variables:
+          ALTCHA_KEY: !Ref AltchaKey
+          FEEDBACK_KEY: !Ref FeedbackKey
+          SPENT_TABLE: !Ref ContactSpentTable
+      Code:
+        ZipFile: |
+          exports.handler = async () => ({ statusCode: 503, body: '{"error":"unavailable"}' });
+      Tags:
+        - Key: project
+          Value: fvcsolutions-site
+
+  # Public by design: the ALTCHA proof of work is the gate. CORS admits only the site (and the local
+  # dev server, so the form can be tried before a deploy); it stops other sites' pages, not curl.
+  ContactFunctionUrl:
+    Type: AWS::Lambda::Url
+    Properties:
+      TargetFunctionArn: !GetAtt ContactFunction.Arn
+      AuthType: NONE
+      Cors:
+        AllowOrigins:
+          - https://fvcsolutions.com
+          - http://localhost:4321
+        AllowMethods: [GET, POST]
+        AllowHeaders: [content-type]
+        MaxAge: 600
+
+  ContactUrlPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref ContactFunction
+      Action: lambda:InvokeFunctionUrl
+      FunctionUrlAuthType: NONE
+      Principal: '*'
+
+  ContactInvokeViaUrlPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref ContactFunction
+      Action: lambda:InvokeFunction
+      InvokedViaFunctionUrl: true
+      Principal: '*'
+
+Outputs:
+  ContactFunctionName:
+    Value: !Ref ContactFunction
+  ContactUrl:
+    Value: !GetAtt ContactFunctionUrl.FunctionUrl

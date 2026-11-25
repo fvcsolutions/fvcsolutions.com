@@ -48,6 +48,8 @@ export default defineConfig({
       },
       workbox: {
         navigateFallback: '/',
+        // /contact?topic=… must match the precached /contact, not fall back to the home page.
+        ignoreURLParametersMatching: [/^utm_/, /^fbclid$/, /^topic$/],
         globPatterns: ['**/*.{js,css,html,svg,png,ico,webp,woff2}'],
         runtimeCaching: [
           {

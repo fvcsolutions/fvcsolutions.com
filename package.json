@@ -9,7 +9,9 @@
     "preview": "astro preview --host",
     "astro": "astro",
     "icons": "node scripts/generate-icons.mjs",
-    "fonts": "node scripts/sync-fonts.mjs"
+    "fonts": "node scripts/sync-fonts.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "deploy:contact": "sh scripts/contact-deploy.sh"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.6.0",
@@ -17,7 +19,13 @@
     "@fontsource-variable/manrope": "^5.2.5",
     "@fontsource/instrument-serif": "^5.2.5",
     "@vite-pwa/astro": "^1.1.0",
+    "altcha": "^3.7.0",
     "astro": "^5.18.0",
     "sharp": "^0.34.4"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1177.0",
+    "altcha-lib": "^2.10.0",
+    "esbuild": "^0.25.12"
   }
 }
