@@ -5,31 +5,31 @@
       { "text": "A few of the things " },
       { "text": "we've shipped.", "italic": true }
     ],
-    "lede": "Two projects we're actively building, plus a sample of past client work. Twenty years' worth of code doesn't fit on one page — what's here is what we think is most relevant to the work we're focused on now."
+    "lede": "Three projects we're actively building, plus a sample of past client work. Twenty years' worth of code doesn't fit on one page — what's here is what we think is most relevant to the work we're focused on now."
   },
   "active": {
     "label": "01 · Currently building",
     "title": "In active development.",
-    "lede": "Internal projects we use to inform how we work — and one product we plan to ship.",
+    "lede": "Products we build and ship, and the agentic workflow we build them with.",
     "items": [
       {
-        "id": "foreman",
+        "id": "pipebrain",
         "image": {
-          "src": "/images/portfolio/foreman.webp",
-          "alt": "Foreman Run task workspace with a queue of in-flight runs, a code diff under review, and a structured plan of goal, steps, and verification",
+          "src": "/images/portfolio/pipebrain.webp",
+          "alt": "PipeBrain work board with a project switcher, verify and backlog counts, milestone progress, and a list of in-flight issues",
           "eager": true
         },
-        "badge": { "kind": "active", "label": "In Development" },
+        "badge": { "kind": "active", "label": "PipeBrain.dev", "href": "https://pipebrain.dev" },
         "meta": "Internal · 2026",
-        "title": "Foreman Run",
-        "role": "AI orchestration · workflow tooling",
-        "description": "An AI-agent harness with remote control. Custom workflows orchestrate work through an AI coding agent running locally or in a sandbox. We use it daily — it's part of why we can ship custom applications faster than firms our size usually can."
+        "title": "PipeBrain",
+        "role": "Agentic workflow · work ledger",
+        "description": "The work ledger behind software built by agents, and the workflow we use to speed up our own development. A person writes and approves the requirement, an agent builds each task, and a second agent runs its checks and records the proof. Some checks only a person can pass, so humans stay the gate. We use it every day — it's part of why we ship faster than firms our size usually can."
       },
       {
         "id": "downbad",
         "image": {
           "src": "/images/portfolio/downbad.webp",
-          "alt": "DownBad landing page with a free domain health check form and uptime, SSL, DNS, domain expiry, and port monitor types",
+          "alt": "DownBad domain health check findings for downbad.app: email security worth monitoring, with the SSL certificate, domain registration, DNS, and three endpoints looking good",
           "eager": true
         },
         "badge": { "kind": "beta", "label": "downbad.app", "href": "https://downbad.app" },
@@ -37,6 +37,18 @@
         "title": "Down Bad",
         "role": "SaaS · uptime monitoring",
         "description": "24/7 uptime monitoring with more features than the established tools, at a flat $50 a year — not per monitor, not per site. Built because we wanted better monitoring for our own infrastructure than the market was offering."
+      },
+      {
+        "id": "kyntiq",
+        "image": {
+          "src": "/images/portfolio/kyntiq.webp",
+          "alt": "KyntiQ screen for a contact named Maya showing her six-digit code, your code to share, and buttons to record whether the codes matched"
+        },
+        "badge": { "kind": "active", "label": "kyntiq.com", "href": "https://kyntiq.com" },
+        "meta": "Product · 2026",
+        "title": "KyntiQ",
+        "role": "Mobile app · scam protection",
+        "description": "A family safe word that changes every minute. AI can copy a familiar voice from a few seconds of audio, so when a call asks you to send money or change a payment, ask “What's your KyntiQ Code?” Paired phones share six-digit codes that rotate every minute and are made on the phone, offline."
       }
     ]
   },

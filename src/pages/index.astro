@@ -9,7 +9,11 @@ import engagement from '../content/engagement.json';
 import team from '../content/team.json';
 import portfolio from '../content/portfolio.json';
 
-const launched = portfolio.active.items.find((i) => i.id === 'downbad')!;
+const findWork = (id: string) => portfolio.active.items.find((i) => i.id === id)!;
+const spotlights = [
+  { item: findWork('downbad'), status: 'Just launched', logo: '/images/portfolio/downbad-logo.webp' },
+  { item: findWork('kyntiq'), status: 'In development', logo: '/images/portfolio/kyntiq-logo.webp' },
+];
 
 // Parse engagement price strings into structured Offer pricing.
 // "$5,000 · 2 weeks" → { price: "5000" }
@@ -218,17 +222,19 @@ const faqLd = {
     </div>
   </header>
 
-  <section class="launched" aria-label="Just launched">
+  <section class="launched" aria-label="Our products">
     <div class="container">
-      <a class="launched-card reveal" href={launched.badge.href} target="_blank" rel="noopener">
-        <img src="/images/portfolio/downbad-logo.webp" alt="" width="56" height="56" />
-        <div class="launched-body">
-          <div class="launched-tag"><span class="launched-dot">Just launched</span> <span class="sep">/</span> {launched.badge.label}</div>
-          <div class="launched-title">{launched.title} <span class="launched-role">{launched.role}</span></div>
-          <p>{launched.description}</p>
-        </div>
-        <span class="launched-arrow" aria-hidden="true">→</span>
-      </a>
+      {spotlights.map(({ item, status, logo }) => (
+        <a class="launched-card reveal" href={item.badge.href} target="_blank" rel="noopener">
+          <img src={logo} alt="" width="56" height="56" />
+          <div class="launched-body">
+            <div class="launched-tag"><span class="launched-dot">{status}</span> <span class="sep">/</span> {item.badge.label}</div>
+            <div class="launched-title">{item.title} <span class="launched-role">{item.role}</span></div>
+            <p>{item.description}</p>
+          </div>
+          <span class="launched-arrow" aria-hidden="true">→</span>
+        </a>
+      ))}
     </div>
   </section>
 
@@ -398,6 +404,7 @@ const faqLd = {
     cursor: pointer;
     transition: border-color 0.2s, transform 0.2s;
   }
+  .launched-card + .launched-card { margin-top: 12px; }
   .launched-card:hover { border-color: var(--accent-deep); transform: translateY(-1px); }
   .launched-card:focus-visible { outline: 2px solid var(--accent-warm); outline-offset: 3px; }
   .launched-card img { width: 56px; height: 56px; flex-shrink: 0; }
