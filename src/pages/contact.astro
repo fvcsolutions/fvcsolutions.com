@@ -314,8 +314,13 @@ const jsonLd = [
     --altcha-border-radius: 2px;
     --altcha-checkbox-size: 26px;
   }
-  /* The widget renders its own DOM, outside Astro's scoping. Give its tick-box row a 44px touch height. */
-  altcha-widget :global(.altcha-checkbox),
+  /* The widget renders its own DOM, outside Astro's scoping. Give its tick-box row a 44px touch height.
+     The box itself keeps its own size: its input is pinned to the box's top, so stretching the box
+     would leave the tick box above the centred label. */
+  altcha-widget :global(.altcha-checkbox-wrap) {
+    min-height: 44px;
+    align-items: center;
+  }
   altcha-widget :global(.altcha-checkbox + label),
   altcha-widget :global(label[for^='altcha-checkbox']) {
     min-height: 44px;
